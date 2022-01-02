@@ -3,8 +3,7 @@ class Command:
     def process():
         raise NotImplementedError
 
-    @staticmethod    
-    def iterator():
+    def iterator(self):
         raise NotImplementedError
 
     @staticmethod

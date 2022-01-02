@@ -3,6 +3,7 @@ import argparse
 import inspect
 import functools
 import multiprocessing as mp
+import types
 
 import docstring_parser
 from tqdm import tqdm
@@ -29,11 +30,14 @@ class Parser:
 
     def run(self):
         args = self.parser.parse_args()
+        command = args.command()
 
         iterable = list(filter(
-            args.filter(args),
-            args.iterator(args)(),
+            functools.partial(command.filter, **args.filter_kwargs(args)),
+            command.iterator(**args.iterator_kwargs(args)),
         ))
+
+        process = functools.partial(command.process, **args.process_kwargs(args))
 
         total = len(iterable)
         workers = args.jobs 
@@ -42,14 +46,12 @@ class Parser:
         elif workers < 0:
             workers = max(0, mp.cpu_count() + 1 + workers)
 
-        func = args.func(args)
-
         if workers == 0:
             with tqdm(iterable) as pbar:
-                [func(input) for input in pbar]
+                [process(input) for input in pbar]
         else:
             with mp.Pool(workers) as pool, tqdm(total=total) as pbar:
-                for _ in pool.imap_unordered(func, iterable):
+                for _ in pool.imap_unordered(process, iterable):
                     pbar.update(1)
 
     def shared_args(self, parser):
@@ -73,15 +75,16 @@ class Parser:
         parser = self.subparsers.add_parser(title, help=help)
         parser = self.shared_args(parser)
 
-        for func in (
-            command.process, 
-            command.iterator,
-            command.filter,
-        ):
+        for func_name in ("process", "iterator", "filter"):
+            func = getattr(command, func_name)
             docstring = docstring_parser.parse(inspect.getdoc(func))
 
+            start_idx = func.start_idx
+            if isinstance(inspect.getattr_static(command, func_name), types.FunctionType):
+                start_idx += 1 # ignore self.
+
             sig = inspect.signature(func)
-            for key in list(sig.parameters)[func.start_idx:]:
+            for key in list(sig.parameters)[start_idx:]:
                 args = None 
                 help = None 
                 for param in docstring.params:
@@ -112,20 +115,29 @@ class Parser:
 
                 parser.add_argument(*args, type=arg_type, help=help, default=default, required=required)
         
-        def getter(func):
+        def getter(func_name):
+            
+            func = getattr(command, func_name)
+            start_idx = func.start_idx
+            if isinstance(inspect.getattr_static(command, func_name), types.FunctionType):
+                print(func_name, start_idx)
+                start_idx += 1
+
             def inner(args):
+                print(func_name, start_idx, list(inspect.signature(func).parameters)[start_idx:])
                 kwargs = {
                     key: getattr(args, key)
-                    for key in list(inspect.signature(func).parameters)[func.start_idx:]
+                    for key in list(inspect.signature(func).parameters)[start_idx:]
                 }
-                print(kwargs)
-                return functools.partial(func, **kwargs)
+                return kwargs
+
             return inner 
 
         parser.set_defaults(
-            func=getter(command.process), 
-            iterator=getter(command.iterator),
-            filter=getter(command.filter),
+            command=command,
+            process_kwargs=getter("process"),
+            iterator_kwargs=getter("iterator"),
+            filter_kwargs=getter("filter"),
         )
 
 

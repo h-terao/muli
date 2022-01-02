@@ -5,8 +5,7 @@ from multiprocess_cli import parser, Command
 class FizzBuzz(Command):
     """ FizzBuzz CLI tool
     """
-    @staticmethod
-    def iterator(total: int = 100):
+    def iterator(self, total: int = 100):
         """ Returns range(total).
 
         Args:
@@ -25,6 +24,8 @@ class FizzBuzz(Command):
         else:
             print(value)
 
+    def filter(self, x):
+        return True
 
 if __name__ == "__main__":
     parser.run()
