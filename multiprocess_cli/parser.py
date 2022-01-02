@@ -121,11 +121,9 @@ class Parser:
             func = getattr(command, func_name)
             start_idx = func.start_idx
             if isinstance(inspect.getattr_static(command, func_name), types.FunctionType):
-                print(func_name, start_idx)
                 start_idx += 1
 
             def inner(args):
-                print(func_name, start_idx, list(inspect.signature(func).parameters)[start_idx:])
                 kwargs = {
                     key: getattr(args, key)
                     for key in list(inspect.signature(func).parameters)[start_idx:]
