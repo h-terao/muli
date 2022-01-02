@@ -1,5 +1,6 @@
 # multiprocess_cli
 Easy to implement simple CLI tools with multiprocessing and progressbar.
+This project is now in progress.
 
 ## Requirements
 - tqdm
