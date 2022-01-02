@@ -48,11 +48,12 @@ if __name__ == "__main__":
     parser.run()
 ```
 
-Now, we can call twice or halve from CLI:
+Now, double and halve are prepared for multiprocessing.
+We can call twice or halve with five workers from CLI:
 
 ```bash
-python main.py twice --total 10  # 0, 2, 4, ...
-python main.py halve --total 10  # 0, 0.5, 1, ...
+python main.py twice --total 10 --workers 5 # 0, 2, 4, ...
+python main.py halve --total 10 --workers 5 # 0, 0.5, 1, ...
 ```
 
 ### Add help messages or short name.
