@@ -3,7 +3,8 @@ from multiprocess_cli import parser, Command
 
 @parser.register()
 class FizzBuzz(Command):
-
+    """ FizzBuzz CLI tool
+    """
     @staticmethod
     def iterator(total: int = 100):
         """ Returns range(total).

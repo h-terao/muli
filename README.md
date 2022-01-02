@@ -12,7 +12,7 @@ pip install git+https://github.com/h-terao/multiprocess_cli
 
 ## Usage
 
-Let's implement a simple CLI tool that doubles or halves values in zero to `total`. 
+Let's implement a simple CLI tool that doubles or halves values from zero to `total`. 
 Write the following lines and save as `main.py`.
 
 ```python
@@ -56,11 +56,12 @@ python main.py halve --total 10  # 0, 0.5, 1, ...
 ### Add help messages or short name.
 
 You can add help messages and short name by writing docstring.
-For example,
+For example, the following example setups default value, short name of arguments, and a help message of `--argument`.
 
 ```python
 class double(Base):
-
+    """ Double the sprcified values.
+    """
     @staticmethod
     def process(v: int, argument: int = 0):  # set default value of a=0 
         """ process function.
@@ -71,4 +72,3 @@ class double(Base):
         print(2*v)
 ```
 
-Then, you can set value of argument from CLI via `--argument` or `-a`.
