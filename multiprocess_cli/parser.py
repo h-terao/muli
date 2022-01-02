@@ -4,6 +4,7 @@ import inspect
 import functools
 import multiprocessing as mp
 import types
+from pathlib import Path
 
 import docstring_parser
 from tqdm import tqdm
