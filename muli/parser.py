@@ -31,7 +31,7 @@ class Parser:
 
     def run(self):
         args = self.parser.parse_args()
-        command = args.command()
+        command = args.command(**args.init_kwargs(args))
 
         iterable = list(filter(
             functools.partial(command.filter, **args.filter_kwargs(args)),
@@ -66,6 +66,7 @@ class Parser:
         command.process.start_idx = 1
         command.filter.start_idx = 1
         command.glob.start_idx = 0
+        command.__init__.start_idx = 0 
 
         docstring = docstring_parser.parse(inspect.getdoc(command))
         if help == "short":
@@ -76,7 +77,7 @@ class Parser:
         parser = self.subparsers.add_parser(title, help=help)
         parser = self.shared_args(parser)
 
-        for func_name in ("process", "glob", "filter"):
+        for func_name in ("process", "glob", "filter", "__init__"):
             func = getattr(command, func_name)
             docstring = docstring_parser.parse(inspect.getdoc(func))
 
@@ -137,6 +138,7 @@ class Parser:
             process_kwargs=getter("process"),
             glob_kwargs=getter("glob"),
             filter_kwargs=getter("filter"),
+            init_kwargs=getter("__init__"),
         )
 
 
