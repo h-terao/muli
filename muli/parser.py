@@ -17,7 +17,7 @@ def strtobool(value) -> bool:
 class Parser:
     def __init__(self, parser=None, subparsers=None):
         self.parser = argparse.ArgumentParser() if parser is None else parser
-        self.subparsers = self.parser.add_subparsers(help="sub-command help") \
+        self.subparsers = self.parser.add_subparsers(help="sub-command help", required=True) \
             if subparsers is None else subparsers
 
     def register(self, title: str | None = None, help: str | None = "short"):
