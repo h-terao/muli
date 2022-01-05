@@ -14,7 +14,7 @@ pip install git+https://github.com/h-terao/muli
 
 ## Usage
 
-### Add new subcommand.
+### Add new subcommands
 
 To add new subcommands, implement command class that inherits `muli.Command`.
 The following example adds `new` subcommand and you can call by `python run.py new ...`.
@@ -72,7 +72,7 @@ Note that the order of output results will not match with input order.
 ### Add options
 
 You can add any options by adding parameters in Command's methods.
-For example, if you implement a `filter` method that accepts a threshold parameter, threshold is automatically added into options.
+For example, if you implement a `filter` method that accepts a threshold parameter, threshold is automatically added into options of the subcommand.
 In addition, you can set default values by set default values of methods' parameters.
 Note that you must annotate types of parameters to decide types of parameters.
 
@@ -83,7 +83,8 @@ def filter(self, x, threshold: float = 0.5)  # threshold is optional.
 ```
 
 Furthermore, you can register short names and help messages of options via docstrings.
-For example, the following docstring add a short name `-th` and a help message `A threshold parameter.` for threshold.
+For example, the following docstring adds a short name `-th` and a help message `A threshold parameter.` for threshold.
+
 ```python
 def filter(self, x, threshold: float = 0.5):
     """
@@ -92,3 +93,8 @@ def filter(self, x, threshold: float = 0.5):
         --threshold, -th: A threshold parameter.
     """
 ```
+
+### Execute your CLI tool
+
+Finally, import every subcommand classes to register parsers, and call `muli.exec()` to parse arguments and execute your subcommands.
+If you forget to import any subcommands, the subcommands is not available.
