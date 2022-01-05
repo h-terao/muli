@@ -2,6 +2,12 @@ from pathlib import Path
 
 
 class Command:
+    def __init__(self, *args, **kwargs):
+        self.initialize(*args, **kwargs)
+    
+    def initialize(self):
+        pass 
+    
     @staticmethod
     def process():
         raise NotImplementedError
