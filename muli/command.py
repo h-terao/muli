@@ -36,6 +36,7 @@ class Command:
         pass
 
     def run(self, args):
+        self.preprocess(**args.get("preprocess", args))
 
         iterable = [
             x for x in self.glob(**args.get("glob", args))
