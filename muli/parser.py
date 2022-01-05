@@ -3,6 +3,7 @@ import argparse
 import inspect
 import types
 import warnings
+from pathlib import Path  # required.
 
 import docstring_parser
 from .command import Command
