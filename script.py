@@ -1,4 +1,4 @@
-from muli import parser, Command
+from muli import exec, parser, Command
 
 
 @parser.register()
@@ -9,7 +9,7 @@ class FizzBuzz(Command):
         return range(total)
 
     @staticmethod
-    def process(value):
+    def step(value):
         if value % 15 == 0:
             print("FizzBuzz")
         elif value % 3 == 0:
@@ -20,5 +20,20 @@ class FizzBuzz(Command):
             print(value)
 
 
+@parser.register()
+class Error(Command):
+
+    @staticmethod
+    def step(v):
+        print(v)
+
+    def __init__(self, n_jobs: int = -1, x: str = "abc"):
+        super().__init__(n_jobs)
+        self.x = x
+
+    def postprocess(self, results, x: str = "z"):
+        return super().postprocess(results)
+
+
 if __name__ == "__main__":
-    parser.run()
+    exec()
