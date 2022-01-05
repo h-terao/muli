@@ -17,8 +17,18 @@ def strtobool(value) -> bool:
 class Parser:
     def __init__(self, parser=None, subparsers=None):
         self.parser = argparse.ArgumentParser() if parser is None else parser
-        self.subparsers = self.parser.add_subparsers(help="sub-command help", required=True) \
-            if subparsers is None else subparsers
+
+        if subparsers is None:
+            subparsers = self.parser.add_subparsers(
+                help="sub-command help",
+                required=True,
+                dest=(
+                    "Subcommand is required to run this CLI tool. "
+                    "To see available subcommands, run with --help option."
+                )
+            )
+
+        self.subparsers = subparsers
 
     def register(self, title: str | None = None, help: str | None = "short"):
         def deco(command: Command):
