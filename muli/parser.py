@@ -66,7 +66,7 @@ class Parser:
         command.process.start_idx = 1
         command.filter.start_idx = 1
         command.glob.start_idx = 0
-        command.__init__.start_idx = 0 
+        command.initialize.start_idx = 0 
 
         docstring = docstring_parser.parse(inspect.getdoc(command))
         if help == "short":
@@ -77,7 +77,7 @@ class Parser:
         parser = self.subparsers.add_parser(title, help=help)
         parser = self.shared_args(parser)
 
-        for func_name in ("process", "glob", "filter", "__init__"):
+        for func_name in ("process", "glob", "filter", "initialize"):
             func = getattr(command, func_name)
             docstring = docstring_parser.parse(inspect.getdoc(func))
 
@@ -138,7 +138,7 @@ class Parser:
             process_kwargs=getter("process"),
             glob_kwargs=getter("glob"),
             filter_kwargs=getter("filter"),
-            init_kwargs=getter("__init__"),
+            init_kwargs=getter("initialize"),
         )
 
 
