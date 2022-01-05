@@ -22,10 +22,7 @@ class Parser:
             subparsers = self.parser.add_subparsers(
                 help="sub-command help",
                 required=True,
-                dest=(
-                    "Subcommand is required to run this CLI tool. "
-                    "To see available subcommands, run with --help option."
-                )
+                dest="",
             )
 
         self.subparsers = subparsers
