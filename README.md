@@ -9,7 +9,7 @@ This project is now in progress.
 
 ## Install
 ```bash
-pip install git+https://github.com/h-terao/multiprocess_cli
+pip install git+https://github.com/h-terao/muli
 ```
 
 ## Usage
