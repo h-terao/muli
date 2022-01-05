@@ -1,4 +1,4 @@
-# multiprocess_cli
+# Multiprocessing CLI (muli)
 Easy to implement simple CLI tools with multiprocessing and progressbar.
 This project is now in progress.
 
@@ -8,7 +8,7 @@ This project is now in progress.
 - docstring_parser
 
 ## Install
-```bash 
+```bash
 pip install git+https://github.com/h-terao/multiprocess_cli
 ```
 
@@ -16,7 +16,7 @@ pip install git+https://github.com/h-terao/multiprocess_cli
 
 ### Example
 
-Let's implement a simple CLI tool that doubles or halves values from zero to `total`. 
+Let's implement a simple CLI tool that doubles or halves values from zero to `total`.
 Write the following lines and save as `main.py`.
 
 ```python
@@ -40,7 +40,7 @@ class double(Command):
     def iterator(self, total: int):
         """ iterator function
 
-        You can add help messages and short option by adding docstring. 
+        You can add help messages and short option by adding docstring.
 
         Args:
             --total, -n (int): Total number of integers to process.
@@ -49,7 +49,7 @@ class double(Command):
 
     #
     #  Filter function. This is optional to implement.
-    #  If this function returns False, the value is skipped. 
+    #  If this function returns False, the value is skipped.
     #
     def filter(self, x, foo: int = 10, bar: int = 20):
         """  filter function
@@ -62,9 +62,9 @@ class double(Command):
 
 @parser.register()
 class Halve(double):
-    
+
     name = "halve"  # you can also register command name by adding a name attribute.
-    
+
     @staticmethod
     def process(v: int):
         print(v / 2)

@@ -35,13 +35,13 @@ class Parser:
 
         iterable = list(filter(
             functools.partial(command.filter, **args.filter_kwargs(args)),
-            command.iterator(**args.iterator_kwargs(args)),
+            command.glob(**args.glob_kwargs(args)),
         ))
 
         process = functools.partial(command.process, **args.process_kwargs(args))
 
         total = len(iterable)
-        workers = args.jobs 
+        workers = args.jobs
         if workers is None:
             workers = 0
         elif workers < 0:
@@ -65,7 +65,7 @@ class Parser:
 
         command.process.start_idx = 1
         command.filter.start_idx = 1
-        command.iterator.start_idx = 0
+        command.glob.start_idx = 0
 
         docstring = docstring_parser.parse(inspect.getdoc(command))
         if help == "short":
@@ -76,7 +76,7 @@ class Parser:
         parser = self.subparsers.add_parser(title, help=help)
         parser = self.shared_args(parser)
 
-        for func_name in ("process", "iterator", "filter"):
+        for func_name in ("process", "glob", "filter"):
             func = getattr(command, func_name)
             docstring = docstring_parser.parse(inspect.getdoc(func))
 
@@ -86,15 +86,15 @@ class Parser:
 
             sig = inspect.signature(func)
             for key in list(sig.parameters)[start_idx:]:
-                args = None 
-                help = None 
+                args = None
+                help = None
                 for param in docstring.params:
                     _args = list(map(lambda x: x.strip(), param.arg_name.split(",")))
                     if key in map(lambda x: x.strip().replace("-", ""), _args):
-                        args = _args 
+                        args = _args
                         help = param.description
-                        break 
-                
+                        break
+
                 if args is None:
                     args = [f"--{key}"]
 
@@ -102,22 +102,22 @@ class Parser:
                 try:
                     arg_type = eval(arg_type)
                 except TypeError:
-                    pass 
+                    pass
 
                 if arg_type is bool:
                     arg_type = strtobool
 
-                default = sig.parameters[key].default 
+                default = sig.parameters[key].default
                 if default is inspect._empty:
-                    required = True 
-                    default = None 
+                    required = True
+                    default = None
                 else:
-                    required = True 
+                    required = True
 
                 parser.add_argument(*args, type=arg_type, help=help, default=default, required=required)
-        
+
         def getter(func_name):
-            
+
             func = getattr(command, func_name)
             start_idx = func.start_idx
             if isinstance(inspect.getattr_static(command, func_name), types.FunctionType):
@@ -130,12 +130,12 @@ class Parser:
                 }
                 return kwargs
 
-            return inner 
+            return inner
 
         parser.set_defaults(
             command=command,
             process_kwargs=getter("process"),
-            iterator_kwargs=getter("iterator"),
+            glob_kwargs=getter("glob"),
             filter_kwargs=getter("filter"),
         )
 

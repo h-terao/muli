@@ -1,18 +1,13 @@
-from multiprocess_cli import parser, Command
+from muli import parser, Command
 
 
 @parser.register()
 class FizzBuzz(Command):
     """ FizzBuzz CLI tool
     """
-    def iterator(self, total: int = 100):
-        """ Returns range(total).
-
-        Args:
-            --total, -n (int): Total number
-        """
+    def glob(self, total: int = 100):
         return range(total)
-    
+
     @staticmethod
     def process(value):
         if value % 15 == 0:
@@ -24,8 +19,6 @@ class FizzBuzz(Command):
         else:
             print(value)
 
-    def filter(self, x):
-        return True
 
 if __name__ == "__main__":
     parser.run()

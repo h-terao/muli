@@ -1,10 +1,10 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="multiprocess_cli",
+    name="muli",
     version="0.1",
     install_requires=[
-        "tqdm", 
+        "tqdm",
         "docstring_parser",
     ],
     author="h-terao",
