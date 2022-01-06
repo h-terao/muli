@@ -26,29 +26,29 @@ from muli import parser, Command
 class new(Command):
     def __init__(self, n_jobs: int):
         super().__init__(n_jobs)
-    
-    def preprocess(self):
-        pass 
-    
+
     def glob(self, in_dir: Path, ext: str):
         return in_dir.rglob(f"*{ext}")
-    
+
     def filter(self, x):
         return True
-    
+
+    def preprocess(self, x):
+        return x
+
     @staticmethod
     def step(x):
         # This process works in parallel.
         print(x)
-    
-    def after_step(self, result):
+
+    def postprocess(self, result):
         return result
-    
-    def postprocess(self, results):
-        pass 
+
+    def finalize(self, results):
+        pass
 ```
 
-You can omit methods but `step` in above example. 
+You can omit methods but `step` in above example.
 These methods will work as like:
 
 ```python
@@ -59,12 +59,12 @@ results = []
 for item in glob(in_dir, ext):
     if not filter(item):
         continue
-
+    item = cmd.preprocess(item)
     result = cmd.step(item)
-    result = cmd.after_step(result)
+    result = cmd.postprocess(result)
     results.append(result)
 
-cmd.postprocess(results)
+cmd.finalize(results)
 ```
 
 Note that the order of output results will not match with input order.
@@ -88,7 +88,7 @@ For example, the following docstring adds a short name `-th` and a help message 
 ```python
 def filter(self, x, threshold: float = 0.5):
     """
-    
+
     Args:
         --threshold, -th: A threshold parameter.
     """

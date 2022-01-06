@@ -9,9 +9,6 @@ class Command:
     def __init__(self, n_jobs: int = -1):
         self._n_jobs = n_jobs
 
-    def preprocess(self):
-        pass
-
     def glob(self, in_dir: Path, ext: str = None):
         """
 
@@ -22,24 +19,26 @@ class Command:
             ext = ""
         return Path(in_dir).rglob(f"*{ext}")
 
-    def filter(self, x) -> bool:
+    def filter(self, input) -> bool:
         return True
 
+    def preprocess(self, input):
+        return input
+
     @staticmethod
-    def step(x):
+    def step(input):
         raise NotImplementedError
 
-    def after_step(self, result):
+    def postprocess(self, result):
         return result
 
-    def postprocess(self, results):
+    def finalize(self, results):
         pass
 
     def run(self, args):
-        self.preprocess(**args.get("preprocess", args))
-
         iterable = [
-            x for x in self.glob(**args.get("glob", args))
+            self.preprocess(x, **args.get("preprocess", args))
+            for x in self.glob(**args.get("glob", args))
             if self.filter(x, **args.get("filter", args))
         ]
 
@@ -50,16 +49,16 @@ class Command:
             with tqdm(iterable) as pbar:
                 for input in pbar:
                     result = step(input)
-                    result = self.after_step(result, **args.get("after_step", args))
+                    result = self.postprocess(result, **args.get("postprocess", args))
                     results.append(result)
         else:
             with mp.Pool(self.n_jobs) as pool, tqdm(total=len(iterable)) as pbar:
                 for result in pool.imap_unordered(step, iterable):
-                    result = self.after_step(result, **args.get("after_step", args))
+                    result = self.postprocess(result, **args.get("postprocess", args))
                     results.append(result)
                     pbar.update(1)
 
-        self.postprocess(results, **args.get("postprocess", args))
+        self.finalize(results, **args.get("finalize", args))
 
     @property
     def n_jobs(self) -> int:

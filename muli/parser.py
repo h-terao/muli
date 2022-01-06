@@ -40,12 +40,12 @@ class Parser:
         # name: start index
         functions = {
             "__init__": 0,
-            "preprocess": 0,
             "glob": 0,
             "filter": 1,
+            "preprocess": 1,
             "step": 1,
-            "after_step": 1,
             "postprocess": 1,
+            "finalize": 1,
         }
 
         docstring = docstring_parser.parse(inspect.getdoc(command))
@@ -157,91 +157,6 @@ class Parser:
             command=command,
             get=get,
         )
-
-        # def getter(func_name):
-
-        #     func = getattr(command, func_name)
-        #     start_idx = func.start_idx
-        #     if isinstance(inspect.getattr_static(command, func_name), types.FunctionType):
-        #         start_idx += 1
-
-        #     def inner(args):
-        #         kwargs = {
-        #             key: getattr(args, key)
-        #             for key in list(inspect.signature(func).parameters)[start_idx:]
-        #         }
-        #         return kwargs
-
-        #     return inner
-
-        # parser.set_defaults(
-        #     command=command,
-        #     process_kwargs=getter("process"),
-        #     glob_kwargs=getter("glob"),
-        #     filter_kwargs=getter("filter"),
-        #     init_kwargs=getter("initialize"),
-        # )
-
-        # for func_name in ("process", "glob", "filter", "initialize"):
-        #     func = getattr(command, func_name)
-        #     docstring = docstring_parser.parse(inspect.getdoc(func))
-
-        #     start_idx = func.start_idx
-        #     sig = inspect.signature(func)
-        #     for key in list(sig.parameters)[start_idx:]:
-        #         args = None
-        #         help = None
-        #         for param in docstring.params:
-        #             _args = list(map(lambda x: x.strip(), param.arg_name.split(",")))
-        #             if key in map(lambda x: x.strip().replace("-", ""), _args):
-        #                 args = _args
-        #                 help = param.description
-        #                 break
-
-        #         if args is None:
-        #             args = [f"--{key}"]
-
-        #         arg_type = sig.parameters[key].annotation
-        #         try:
-        #             arg_type = eval(arg_type)
-        #         except TypeError:
-        #             pass
-
-        #         if arg_type is bool:
-        #             arg_type = strtobool
-
-        #         default = sig.parameters[key].default
-        #         if default is inspect._empty:
-        #             required = True
-        #             default = None
-        #         else:
-        #             required = True
-
-        #         parser.add_argument(*args, type=arg_type, help=help, default=default, required=required)
-
-        # def getter(func_name):
-
-        #     func = getattr(command, func_name)
-        #     start_idx = func.start_idx
-        #     if isinstance(inspect.getattr_static(command, func_name), types.FunctionType):
-        #         start_idx += 1
-
-        #     def inner(args):
-        #         kwargs = {
-        #             key: getattr(args, key)
-        #             for key in list(inspect.signature(func).parameters)[start_idx:]
-        #         }
-        #         return kwargs
-
-        #     return inner
-
-        # parser.set_defaults(
-        #     command=command,
-        #     process_kwargs=getter("process"),
-        #     glob_kwargs=getter("glob"),
-        #     filter_kwargs=getter("filter"),
-        #     init_kwargs=getter("initialize"),
-        # )
 
 
 parser = Parser()

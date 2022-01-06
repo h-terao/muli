@@ -20,19 +20,19 @@ class FizzBuzz(Command):
             print(value)
 
 
-@parser.register()
-class Error(Command):
+# @parser.register()
+# class Error(Command):
 
-    @staticmethod
-    def step(v):
-        print(v)
+#     @staticmethod
+#     def step(v):
+#         print(v)
 
-    def __init__(self, n_jobs: int = -1, x: str = "abc"):
-        super().__init__(n_jobs)
-        self.x = x
+#     def __init__(self, n_jobs: int = -1, x: str = "abc"):
+#         super().__init__(n_jobs)
+#         self.x = x
 
-    def postprocess(self, results, x: str = "z"):
-        return super().postprocess(results)
+#     def postprocess(self, results, x: str = "z"):
+#         return super().postprocess(results)
 
 
 if __name__ == "__main__":
