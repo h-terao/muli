@@ -53,14 +53,13 @@ These methods will work as like:
 
 ```python
 cmd = new(n_jobs)
-cmd.preprocess()
 
 results = []
-for item in glob(in_dir, ext):
-    if not filter(item):
+for item in cmd.glob(in_dir, ext):
+    if not cmd.filter(item):
         continue
     item = cmd.preprocess(item)
-    result = cmd.step(item)
+    result = cmd.step(item)  # This method runs in parallel.
     result = cmd.postprocess(result)
     results.append(result)
 
